@@ -1,4 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Fall2025_Project3_jma33.Models
 {
@@ -13,5 +16,10 @@ namespace Fall2025_Project3_jma33.Models
         public string Genre { get; set; }
         public int Year { get; set; }
         public byte[]? Poster { get; set; }
+
+        //public ICollection<MovieActors> MovieActors { get; set; }
+
+        //[NotMapped]
+        //public IEnumerable<Actor> Actors => MovieActors?.Select(a => a.Actor);
     }
 }

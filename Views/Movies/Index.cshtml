@@ -9,10 +9,10 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table EditTables">
     <thead>
         <tr>
-            <th>
+            <th datatable-wrap>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
@@ -33,7 +33,7 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <td class="datatable-wrap">
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
@@ -45,8 +45,8 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Year)
             </td>
-            <td>
-                <img src="@Url.Action("Poster", "Movies", new { id=@item.Id })" width="100" height=auto />
+            <td >
+                <img src="@Url.Action("Poster", "Movies", new { id=@item.Id })" width="100" height=auto/>
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

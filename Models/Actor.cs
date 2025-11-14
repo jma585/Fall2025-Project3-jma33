@@ -13,5 +13,7 @@ namespace Fall2025_Project3_jma33.Models
         public int Age { get; set; }
         public string IMDBLink { get; set; }
         public byte[]? Photo { get; set; }
+
+        //public ICollection<MovieActors> MovieActors { get; set; }
     }
 }

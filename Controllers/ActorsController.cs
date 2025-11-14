@@ -57,7 +57,15 @@ namespace Fall2025_Project3_jma33.Controllers
                 return NotFound();
             }
 
-            return View(actor);
+            var movies = await _context.MovieActors
+                .Include(m => m.Movie)
+                .Where(m => m.ActorId == actor.Id)
+                .Select(m => m.Movie!)
+                .ToListAsync();
+
+            var vm = new ActorDetailsViewModel(actor, movies);
+
+            return View(vm);
         }
 
         // GET: Actors/Create

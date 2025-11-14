@@ -1,4 +1,5 @@
-﻿@model Fall2025_Project3_jma33.Models.Movie
+﻿@model Fall2025_Project3_jma33.Models.MovieDetailsViewModel
+@using Fall2025_Project3_jma33.Controllers
 
 @{
     ViewData["Title"] = "Details";
@@ -11,41 +12,100 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.Movie.Title)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
+            @Html.DisplayFor(model => model.Movie.Title)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IMDBLink)
+            @Html.DisplayNameFor(model => model.Movie.IMDBLink)
         </dt>
         <dd class = "col-sm-10">
-            <a href="@Model.IMDBLink">@Html.DisplayFor(model => model.IMDBLink)</a>
+            <a href="model.Movie.IMDBLink">@Html.DisplayFor(model => model.Movie.IMDBLink)</a>
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Genre)
+            @Html.DisplayNameFor(model => model.Movie.Genre)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Genre)
+            @Html.DisplayFor(model => model.Movie.Genre)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Year)
+            @Html.DisplayNameFor(model => model.Movie.Year)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Year)
+            @Html.DisplayFor(model => model.Movie.Year)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Poster)
+            @Html.DisplayNameFor(model => model.Movie.Poster)
         </dt>
         <dd class = "col-sm-10">
-            @if (Model.Poster != null)
+            @if (@Model?.Movie.Poster != null)
             {
-                <img src="@Url.Action("Poster", "Movies", new { id=@Model?.Id })" width="100" height=auto />
+                <img src="@Url.Action("Poster", "Movies", new { id=@Model?.Movie.Id })" width="200" height=auto />
             }
         </dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <h2>Actors</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Actors)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h2>Honest Reviews</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Reviews
+                </th>
+                <th>
+                    Sentiment Score
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ReviewsandSents)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Review)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Sentiment)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Movie.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

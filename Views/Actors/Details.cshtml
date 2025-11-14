@@ -1,4 +1,4 @@
-﻿@model Fall2025_Project3_jma33.Models.Actor
+﻿@model Fall2025_Project3_jma33.Models.ActorDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,41 +11,71 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Actor.Name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.Actor.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Gender)
+            @Html.DisplayNameFor(model => model.Actor.Gender)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Gender)
+            @Html.DisplayFor(model => model.Actor.Gender)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Age)
+            @Html.DisplayNameFor(model => model.Actor.Age)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Age)
+            @Html.DisplayFor(model => model.Actor.Age)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IMDBLink)
+            @Html.DisplayNameFor(model => model.Actor.IMDBLink)
         </dt>
         <dd class = "col-sm-10">
-            <a href="@Model.IMDBLink">@Html.DisplayFor(model => model.IMDBLink)</a>
+            <a href="model.Actor.IMDBLink">@Html.DisplayFor(model => model.Actor.IMDBLink)</a>
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Photo)
+            @Html.DisplayNameFor(model => model.Actor.Photo)
         </dt>
         <dd class = "col-sm-10">
-            @if (Model.Photo != null)
+            @if (@Model?.Actor.Photo != null)
             {
-                <img src="@Url.Action("Photo", "Actors", new { id=@Model?.Id })" width="100" height=auto />
+                <img src="@Url.Action("Photo", "Actors", new { id=@Model?.Actor.Id })" width="200" height=auto />
             }
         </dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <h2>Movies</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Title
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Movies)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Actor.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
