@@ -4,11 +4,9 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Create Movie</h1>
 
-<h4>Movie</h4>
-<hr />
-<div class="row">
+<div class="row mt-2">
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -32,7 +30,7 @@
                 <input asp-for="Year" class="form-control" />
                 <span asp-validation-for="Year" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label asp-for="Poster" class="control-label"></label>
                 <input type="file" id="Poster" name="Poster" class="form-control" />
                 <span asp-validation-for="Poster" class="text-danger"></span>
@@ -44,7 +42,7 @@
     </div>
 </div>
 
-<div>
+<div class="mt-2">
     <a asp-action="Index">Back to List</a>
 </div>
 

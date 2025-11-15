@@ -4,12 +4,12 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Movie-Actor Relationships</h1>
+<h1>Movie-Actor Mappings</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table" data-table>
+<table class="table MovieActorTable">
     <thead>
         <tr>
             <th>
@@ -31,9 +31,18 @@
                 @Html.DisplayFor(modelItem => item.Actor.Name)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                    <i class="fa fa-pen" style="color: green;"></i>
+                </a>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                    <i class="fa-solid fa-bars" style="color: silver;"></i>
+                </a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                    <i class="fa fa-xmark" style="color: red;"></i>
+                </a>
+                @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
             </td>
         </tr>
 }

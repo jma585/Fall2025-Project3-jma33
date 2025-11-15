@@ -19,68 +19,52 @@ namespace Fall2025_Project3_jma33.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _config;
-        //private readonly ApiKeyCredential _apiCredential;
-        //private readonly string _apiEndpoint;
-        //private readonly string _aiDeployment;
 
-        private static readonly Uri ApiEndpoint = new("");
-        private static readonly ApiKeyCredential ApiCredential = new("");
-        private const string AiDeployment = "";
+        private readonly ApiKeyCredential _apiCredential;
+        private readonly Uri _apiEndpoint;
+        private const string AiDeployment = "gpt-4.1-nano";
 
         public MoviesController(ApplicationDbContext context, IConfiguration config)
         {
             _context = context;
             _config = config;
-            //var ApiKey = _config["AZURE_OPENAI_API_KEY"] ?? throw new InvalidOperationException("API key in Azure does not exist in the current Configuration");
-            //_apiEndpoint = "https://fall2025-aif-eastus2.cognitiveservices.azure.com/";
-            //_aiDeployment = "gpt-4.1-nano";
-            //_apiCredential = new ApiKeyCredential(ApiKey);
+
+            var apiKey = _config["ApiCredential"] ?? throw new InvalidOperationException("API credential in Azure does not exist in the current Configuration");
+            var apiEndpoint = _config["ApiEndpoint"] ?? throw new InvalidOperationException("API endpoint in Azure does not exist in the current Configuration");
+
+            _apiCredential = new ApiKeyCredential(apiKey);
+            _apiEndpoint = new Uri(apiEndpoint);
         }
 
         private async Task<List<MovieReviewAndSentiment>> CreateMovieReviewsSentiment(string movieTitle, int movieYear)
         {
             var reviews_and_sents = new List<MovieReviewAndSentiment>();
-            Console.WriteLine("Asking reviewers...");
+            ChatClient client = new AzureOpenAIClient(_apiEndpoint, _apiCredential).GetChatClient(AiDeployment);
 
-            ChatClient client = new AzureOpenAIClient(ApiEndpoint, ApiCredential).GetChatClient(AiDeployment);
-
-            string[] personas = { "is harsh", "loves romance", "loves comedy", "loves thrillers", "loves fantasy", "always wanted to be an actor", "enjoys the outdoors", "has watched many movies", "is a creative author", "is a director who has won many awards" };
             var messages = new ChatMessage[]
             {
             new SystemChatMessage($"You are an experienced film critic who has watched hundreds of movies and provide heartfelt, honest reviews. You love stories that are not the most predictable, but you normally provide different reviews from different points of view."),
-            new UserChatMessage($"Generate 10 reviews where each review consists of a score out of 10 and a short description for the movie {movieTitle} released in {movieYear}. For the description, use more than 50 words but less than 100 words and describe aspects of the movie that you loved/hated and whether you would watch it again or recommend it to others. After every description except the last, add a '|'. Don't number the reviews.")
-            //$" represent a group of {personas.Length} film critics who have the following personalities: {string.Join(",", personas)}. When you receive a question, create a response for each member of the group with each response separated by a '|', totalling {personas.Length} responses, but don't indicate which member you are."),
+            new UserChatMessage($"Generate 10 reviews where each review consists of a score out of 10 and a short description for the movie {movieTitle} released in {movieYear}. For the description, use more than 50 words but less than 100 words and describe aspects of the movie that you loved/hated and whether you would watch it again or recommend it to others. After every description, add a '|'. Don't number the reviews.")
             };
             ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages);
-            Console.WriteLine(result.Value.Content);
+            
             string[] reviews = result.Value.Content[0].Text.Split('|').Select(s => s.Trim()).ToArray();
-            Console.WriteLine(reviews[0]);
-            //Console.WriteLine(reviews[9]);
+            
             var analyzer = new SentimentIntensityAnalyzer();
 
-            foreach (var singleReview in reviews)
+            //foreach (var singleReview in reviews)
+            for (int i = 0; i < 10; i++)
             {
+                var singleReview = reviews[i];
                 SentimentAnalysisResults sentiment = analyzer.PolarityScores(singleReview);
 
                 reviews_and_sents.Add(new MovieReviewAndSentiment
                 {
                     Review = singleReview,
                     Sentiment = sentiment.Compound,
+                    Sentiment_String = sentiment.Compound.ToString("F2")
                 });
             }
-
-            //for (int i = 0; i < reviews.Length; i++)
-            //{
-            //    string review = reviews[i];
-            //    SentimentAnalysisResults sentiment = analyzer.PolarityScores(review);
-            //    sentimentTotal += sentiment.Compound;
-
-            //    Console.WriteLine($"Review {i + 1} (sentiment {sentiment.Compound})");
-            //    Console.WriteLine(review);
-            //    Console.WriteLine();
-            //}
-
-            //Console.Write($"#####\n# Sentiment Average: {sentimentAverage:#.###}\n#####\n");
 
             return reviews_and_sents;
         }
@@ -130,10 +114,8 @@ namespace Fall2025_Project3_jma33.Controllers
                 .ToListAsync();
 
             var reviewsAndSents = await CreateMovieReviewsSentiment(movie.Title, movie.Year);
-            Console.WriteLine("About to create MovieDetailsViewModel");
+            
             var vm = new MovieDetailsViewModel(movie, actors, reviewsAndSents);
-
-            Console.WriteLine("Created MovieDetailsViewModel");
 
             return View(vm);
         }
@@ -162,10 +144,6 @@ namespace Fall2025_Project3_jma33.Controllers
                 _context.Add(movie);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            if (!ModelState.IsValid)
-            {
-                Console.WriteLine("Model State is invalid for creation");
             }
 
             return View(movie);

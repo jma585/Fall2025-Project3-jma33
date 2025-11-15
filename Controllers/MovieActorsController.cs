@@ -61,6 +61,16 @@ namespace Fall2025_Project3_jma33.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,MovieId,ActorId")] MovieActors movieActors)
         {
+            bool exists = await _context.MovieActors
+                .AnyAsync(ma => ma.ActorId == movieActors.ActorId
+                             && ma.MovieId == movieActors.MovieId);
+            if (exists)
+            {
+                ModelState.AddModelError(string.Empty, "This actor is already linked to this movie.");
+                ViewData["ActorId"] = new SelectList(_context.Actor, "Id", "Name", movieActors.ActorId);
+                ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title", movieActors.MovieId);
+                return View(movieActors);
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(movieActors);

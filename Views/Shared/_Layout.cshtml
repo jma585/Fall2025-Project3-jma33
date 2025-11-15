@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Fall2025_Project3_jma33</title>
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/darkly/bootstrap.min.css"
+        integrity="sha256-KTDNnlE+GO2YxlBYvlZWnovq1J7iFKoyRSX6f5NiGhE=" crossorigin="anonymous">
+
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap5.min.css"
         integrity="sha256-4JxBXDS7nw/QUAEKaKJ2DFe0PDIHRT8jvyDo5JiVq7I="
         crossorigin="anonymous">
@@ -14,45 +20,44 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary py-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HOME</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        @* <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li> *@
-                        @* <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li> *@
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Movies" asp-action="Index">Manage Movies</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Actors" asp-action="Index">Manage Actors</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="MovieActors" asp-action="Index">Manage Relationships</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
+
+            <a class="navbar-brand d-flex align-items-center fs-4" asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="fa fa-house me-2"></i> Home</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav ms-3">
+                    <li class="nav-item">
+                        <a class="nav-link fs-5 d-flex align-items-center me-4" asp-area="" asp-controller="Movies" asp-action="Index">
+                            <i class="fa-solid fa-film me-2"></i>Favorite Movies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5 d-flex align-items-center me-4" asp-area="" asp-controller="Actors" asp-action="Index">
+                            <i class="fa-solid fa-person me-2"></i>Favorite Actors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5 d-flex align-items-center me-4" asp-area="" asp-controller="MovieActors" asp-action="Index">
+                            <i class="fa-solid fa-star me-2"></i>Map Favorites</a>
+                    </li>
+                </ul>   
+            </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container mt-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted text-center">
         <div class="container">
-            &copy; 2025 - Fall2025_Project3_jma33 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - Film Favorites - Built with ASP.NET Core MVC
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -4,11 +4,9 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Actor Details</h1>
 
-<div>
-    <h4>Actor</h4>
-    <hr />
+<div class="mt-2">
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Actor.Name)
@@ -48,7 +46,7 @@
 
 <div>
     <h2>Movies</h2>
-    <table class="table">
+    <table class="table OtherInfoTables">
         <thead>
             <tr>
                 <th>
@@ -65,9 +63,56 @@
                         @Html.DisplayFor(modelItem => item.Title)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                            <i class="fa fa-pen" style="color: green;"></i>
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                            <i class="fa-solid fa-bars" style="color: silver;"></i>
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                            <i class="fa fa-xmark" style="color: red;"></i>
+                        </a>
+                        @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    </br>
+    <h3 style="text-align: center;">Overall Sentiment Score: @Model.AvgSentiment</h2>
+    </br>
+    <h2>Recent Tweets</h2>
+    <table class="table" data-table>
+        <thead>
+            <tr>
+                <th>
+                    User
+                </th>
+                <th>
+                    Tweet
+                </th>
+                <th>
+                    Sentiment Score
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.TweetsandSents)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tweet_Username)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tweet_Text)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Sentiment_String)
                     </td>
                 </tr>
             }

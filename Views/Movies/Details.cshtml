@@ -5,11 +5,9 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Movie Details</h1>
 
 <div>
-    <h4>Movie</h4>
-    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Movie.Title)
@@ -49,7 +47,7 @@
 
 <div>
     <h2>Actors</h2>
-    <table class="table">
+    <table class="table OtherInfoTables">
         <thead>
             <tr>
                 <th>
@@ -66,9 +64,18 @@
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                            <i class="fa fa-pen" style="color: green;"></i>
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                            <i class="fa-solid fa-bars" style="color: silver;"></i>
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                            <i class="fa fa-xmark" style="color: red;"></i>
+                        </a>
+                        @* <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
                     </td>
                 </tr>
             }
@@ -77,8 +84,11 @@
 </div>
 
 <div>
+    </br>
+    <h3 style="text-align: center;">Overall Sentiment Score: @Model.AvgSentiment</h2>
+    </br>
     <h2>Honest Reviews</h2>
-    <table class="table">
+    <table class="table" data-table>
         <thead>
             <tr>
                 <th>
@@ -97,7 +107,7 @@
                         @Html.DisplayFor(modelItem => item.Review)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Sentiment)
+                        @Html.DisplayFor(modelItem => item.Sentiment_String)
                     </td>
                 </tr>
             }

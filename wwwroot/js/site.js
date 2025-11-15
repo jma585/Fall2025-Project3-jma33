@@ -8,3 +8,15 @@ $('.EditTables').DataTable({
         { "orderable": false, "targets": [4,5]}
     ]
 });
+
+$('.OtherInfoTables').DataTable({
+    "columnDefs": [
+        { "orderable": false, "targets": [1] }
+    ]
+});
+
+$('.MovieActorTable').DataTable({
+    "columnDefs": [
+        { "orderable": false, "targets": [2] }
+    ]
+});

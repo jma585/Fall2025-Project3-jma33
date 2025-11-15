@@ -5,14 +5,14 @@
         public Movie Movie { get; set; }
         public IEnumerable<Actor> Actors { get; set; }
         public List<MovieReviewAndSentiment> ReviewsandSents { get; set; }
-        public double AvgSentiment { get; set; }
+        public string AvgSentiment { get; set; }
 
         public MovieDetailsViewModel(Movie movie, IEnumerable<Actor> actors, List<MovieReviewAndSentiment> movieRevSents)
         {
             Movie = movie;
             Actors = actors;
             ReviewsandSents = movieRevSents;
-            AvgSentiment = movieRevSents.Average(r => r.Sentiment);
+            AvgSentiment = movieRevSents.Average(r => r.Sentiment).ToString("F2");
         }
     }
 
@@ -20,5 +20,6 @@
     {
         public string Review { get; set; }
         public double Sentiment { get; set; }
+        public string Sentiment_String { get; set; }
     }
 }

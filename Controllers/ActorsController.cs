@@ -1,22 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Azure.AI.OpenAI;
+using Fall2025_Project3_jma33.Data;
+using Fall2025_Project3_jma33.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Fall2025_Project3_jma33.Data;
-using Fall2025_Project3_jma33.Models;
+using OpenAI.Chat;
+using System;
+using System.ClientModel;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json.Nodes;
+using System.Threading.Tasks;
+using VaderSharp2;
 
 namespace Fall2025_Project3_jma33.Controllers
 {
     public class ActorsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _config;
 
-        public ActorsController(ApplicationDbContext context)
+        private readonly ApiKeyCredential _apiCredential;
+        private readonly Uri _apiEndpoint;
+        private const string AiDeployment = "gpt-4.1-nano";
+
+        public ActorsController(ApplicationDbContext context, IConfiguration config)
         {
             _context = context;
+            _config = config;
+
+            var apiKey = _config["ApiCredential"] ?? throw new InvalidOperationException("API credential in Azure does not exist in the current Configuration");
+            var apiEndpoint = _config["ApiEndpoint"] ?? throw new InvalidOperationException("API endpoint in Azure does not exist in the current Configuration");
+
+            _apiCredential = new ApiKeyCredential(apiKey);
+            _apiEndpoint = new Uri(apiEndpoint);
+        }
+
+        private async Task<List<ActorTweetAndSentiment>> CreateActorTweetsSentiment(string actorName)
+        {
+            var tweets_and_sents = new List<ActorTweetAndSentiment>();
+            ChatClient client = new AzureOpenAIClient(_apiEndpoint, _apiCredential).GetChatClient(AiDeployment);
+
+            var messages = new ChatMessage[]
+            {
+            new SystemChatMessage($"You represent the Twitter social media platform. Generate realistic tweets about actors that could appear on social media and entertainment news. Each answer should be a valid JSON formatted array of objects containing the tweet and username. The response should start with [."),
+            new UserChatMessage($"Generate 20 different tweets from a variety of users about the actor {actorName}. For the tweet content, include a mix of comments about their work, public events, social media, or general news. Keep each tweet content under 50 words.")
+            };
+            ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages);
+
+            string tweetsJsonString = result.Value.Content.FirstOrDefault()?.Text ?? "[]";
+            JsonArray json = JsonNode.Parse(tweetsJsonString)!.AsArray();
+
+            var analyzer = new SentimentIntensityAnalyzer();
+
+            var tweets = json.Select(t => new { Username = t!["username"]?.ToString() ?? "", Text = t!["tweet"]?.ToString() ?? "" }).ToArray();
+            
+            foreach (var tweet in tweets)
+            {
+                SentimentAnalysisResults sentiment = analyzer.PolarityScores(tweet.Text);
+                tweets_and_sents.Add(new ActorTweetAndSentiment
+                {
+                    Tweet_Username = tweet.Username,
+                    Tweet_Text = tweet.Text,
+                    Sentiment = sentiment.Compound,
+                    Sentiment_String = sentiment.Compound.ToString("F2")
+                });
+            }
+            return tweets_and_sents;
         }
 
         public async Task<IActionResult> Photo(int? id)
@@ -63,7 +113,9 @@ namespace Fall2025_Project3_jma33.Controllers
                 .Select(m => m.Movie!)
                 .ToListAsync();
 
-            var vm = new ActorDetailsViewModel(actor, movies);
+            var tweetsAndSents = await CreateActorTweetsSentiment(actor.Name);
+            
+            var vm = new ActorDetailsViewModel(actor, movies, tweetsAndSents);
 
             return View(vm);
         }
